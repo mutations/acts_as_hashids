@@ -1,6 +1,6 @@
-require: rubocop-rspec
+plugins:
+  - rubocop-rspec
 AllCops:
-  TargetRubyVersion: 2.7
   Exclude:
     - 'bin/**/*'
     - 'tmp/**/*'

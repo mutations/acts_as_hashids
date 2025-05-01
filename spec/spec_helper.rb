@@ -1,7 +1,6 @@
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
 # Test Coverage
-require 'codeclimate-test-reporter'
 require 'simplecov'
 
 SimpleCov.start 'rails' do
@@ -14,8 +13,7 @@ SimpleCov.start 'rails' do
     end
 
     formatter SimpleCov::Formatter::MultiFormatter.new([
-      SimpleCov::Formatter::LcovFormatter,
-      CodeClimate::TestReporter::Formatter
+      SimpleCov::Formatter::LcovFormatter
     ])
   else
     formatter SimpleCov::Formatter::HTMLFormatter
