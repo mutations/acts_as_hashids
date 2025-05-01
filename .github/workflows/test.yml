@@ -6,16 +6,16 @@ on:
     branches: [ main ]
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        ruby_version: ["2.7.5", "3.0.3", "3.1.0", "3.2.0", "3.3.0"]
-        active_record_version: ["6.0", "6.1", "7.0", "7.1"]
+        ruby_version: ["3.3.0", "3.4.0"]
+        active_record_version: ["7.2", "8.0"]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1.177.0
+        uses: ruby/setup-ruby@v1.237.0
         with:
           ruby-version: ${{ matrix.ruby_version }}
           bundler-cache: true
@@ -35,7 +35,7 @@ jobs:
           parallel: true
   finish:
     needs: test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
       uses: coverallsapp/github-action@1.1.3
