@@ -14,4 +14,4 @@ gem 'rubocop', '~> 1.75.4'
 gem 'rubocop-rspec', '~> 3.6.0'
 gem 'simplecov', '~> 0.22.0'
 gem 'simplecov-lcov', '~> 0.8.0'
-gem 'sqlite3', '~> 2.6'
+gem 'sqlite3', '~> 2.6', force_ruby_platform: true
