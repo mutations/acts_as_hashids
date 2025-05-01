@@ -1,11 +1,10 @@
 require 'spec_helper'
 
 RSpec.describe ActsAsHashids::Core do
-  around :context do |block|
+  around do |block|
     m = ActiveRecord::Migration.new
     m.verbose = false
-    m.create_table :core_foos, force: true do |t|
-    end
+    m.create_table :core_foos, force: true
     m.create_table :core_bars, force: true do |t|
       t.integer :core_foo_id, index: true
     end
@@ -17,17 +16,28 @@ RSpec.describe ActsAsHashids::Core do
     end
   end
 
-  class Base < ActiveRecord::Base
-    self.abstract_class = true
-    acts_as_hashids length: 4
-  end
+  before do
+    stub_const(
+      'Base',
+      Class.new(ActiveRecord::Base) do
+        self.abstract_class = true
+        acts_as_hashids length: 4
+      end
+    )
 
-  class CoreFoo < Base
-    has_many :core_bars
-  end
+    stub_const(
+      'CoreFoo',
+      Class.new(Base) do
+        has_many :core_bars
+      end
+    )
 
-  class CoreBar < Base
-    belongs_to :core_foo
+    stub_const(
+      'CoreBar',
+      Class.new(Base) do
+        belongs_to :core_foo
+      end
+    )
   end
 
   describe '.find' do
@@ -40,6 +50,7 @@ RSpec.describe ActsAsHashids::Core do
       it 'decodes hash id and returns the record' do
         expect(model.find(foo1.to_param)).to eq foo1
       end
+
       context 'with unexisting hash id' do
         it 'raises an exception' do
           expect { model.find('bMab') }.to raise_error(
@@ -47,6 +58,7 @@ RSpec.describe ActsAsHashids::Core do
           )
         end
       end
+
       context 'with hash id which looks like a logarithm' do
         let!(:foo1) { CoreFoo.create(id: CoreFoo.hashids.decode('4E93')[0]) }
         let!(:foo2) { CoreFoo.create(id: '4') }
@@ -55,19 +67,23 @@ RSpec.describe ActsAsHashids::Core do
           expect(model.find('4E93')).to eq foo1
           expect(model.find('4')).not_to eq foo1
         end
+
         it 'decodes hash id and returns the record' do
           expect(model.find('4E93')).not_to eq foo2
           expect(model.find('4')).to eq foo2
         end
       end
+
       it 'returns the record when finding by string id' do
         expect(model.find(foo1.id.to_s)).to eq foo1
       end
     end
+
     context 'for multiple arguments' do
       it 'decodes hash id and returns the record' do
         expect(model.find([foo1.to_param, foo2.to_param])).to eq [foo1, foo2]
       end
+
       context 'with unexisting hash id' do
         it 'raises an exception' do
           expect { model.find(%w[bMab Qgab]) }.to raise_error(
@@ -77,11 +93,13 @@ RSpec.describe ActsAsHashids::Core do
         end
       end
     end
+
     context 'as ActiveRecord_Relation' do
       it 'decodes hash id and returns the record' do
         expect(model.where(nil).find(foo1.to_param)).to eq foo1
       end
     end
+
     context 'as ActiveRecord_Associations_CollectionProxy' do
       let(:bar3) { CoreBar.create core_foo: foo1 }
       let(:bar4) { CoreBar.create core_foo: foo1 }
@@ -94,6 +112,7 @@ RSpec.describe ActsAsHashids::Core do
       it 'decodes hash id and returns the record' do
         expect(foo1.core_bars.find(bar3.to_param)).to eq bar3
       end
+
       context 'without arguments' do
         it 'delegates to detect method' do
           allow(foo1.core_bars).to receive(:detect).once.and_call_original
@@ -102,6 +121,7 @@ RSpec.describe ActsAsHashids::Core do
         end
       end
     end
+
     context 'when reloaded' do
       subject(:model) { CoreFoo.create }
 
@@ -112,6 +132,7 @@ RSpec.describe ActsAsHashids::Core do
       end
     end
   end
+
   describe '.with_hashids' do
     subject(:model) { CoreFoo }
 
@@ -121,12 +142,14 @@ RSpec.describe ActsAsHashids::Core do
     it 'decodes hash id and returns the record' do
       expect(model.with_hashids([foo1.to_param, foo2.to_param]).all).to eq [foo1, foo2]
     end
+
     context 'with invalid hash id' do
       it 'raises an exception' do
         expect { model.with_hashids('@').all }.to raise_error(ActsAsHashids::Exception, 'Decode error: ["@"]')
       end
     end
   end
+
   describe '#to_param' do
     subject(:model) { CoreFoo.create id: 5 }
 

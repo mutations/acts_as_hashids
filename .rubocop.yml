@@ -5,6 +5,7 @@ AllCops:
     - 'bin/**/*'
     - 'tmp/**/*'
     - "vendor/**/*"
+  NewCops: enable
 Metrics/AbcSize:
   Max: 40
 Metrics/MethodLength:
@@ -12,7 +13,7 @@ Metrics/MethodLength:
 Metrics/CyclomaticComplexity:
   Max: 10
 Metrics/PerceivedComplexity:
-  Max: 10
+  Enabled: false
 Metrics/BlockLength:
   Enabled: false
 Style/Documentation:
@@ -58,5 +59,7 @@ RSpec/ContextWording:
     - without
     - for
     - as
+RSpec/IndexedLet:
+  Enabled: false
 RSpec/MultipleExpectations:
   Max: 2

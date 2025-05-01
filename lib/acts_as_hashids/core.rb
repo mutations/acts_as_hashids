@@ -14,10 +14,12 @@ module ActsAsHashids
         return detect(&block) if block.present? && respond_to?(:detect)
 
         encoded_ids = Array(ids).map do |id|
-          id = id.to_i if Integer(id)
-          hashids.encode(id)
-        rescue TypeError, ArgumentError
-          id
+          begin
+            id = id.to_i if Integer(id)
+            hashids.encode(id)
+          rescue TypeError, ArgumentError
+            id
+          end
         end
 
         encoded_ids = encoded_ids.flatten
@@ -59,7 +61,7 @@ module ActsAsHashids
 
       def has_many(*args, &block) # rubocop:disable Naming/PredicateName
         options = args.extract_options!
-        options[:extend] = (options[:extend] || []).concat([FinderMethods])
+        options[:extend] = (options[:extend] || []).push(FinderMethods)
         super(*args, **options, &block)
       end
 

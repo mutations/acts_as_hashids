@@ -15,20 +15,13 @@ Gem::Specification.new do |spec|
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  spec.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   spec.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
   spec.required_ruby_version = ['>= 2.3.0', '< 4.0']
 
-  spec.add_runtime_dependency 'activerecord', '>= 4.0'
-  spec.add_runtime_dependency 'hashids', '~> 1.0'
+  spec.add_dependency 'activerecord', '>= 4.0'
+  spec.add_dependency 'hashids', '~> 1.0'
 
-  spec.add_development_dependency 'rake', '~> 13.2.1'
-  spec.add_development_dependency 'rspec', '~> 3.13'
-  spec.add_development_dependency 'rubocop', '~> 1.75.4'
-  spec.add_development_dependency 'rubocop-rspec', '~> 3.6.0'
-  spec.add_development_dependency 'simplecov', '~> 0.22.0'
-  spec.add_development_dependency 'simplecov-lcov', '~> 0.8.0'
-  spec.add_development_dependency 'sqlite3', '~> 2.6'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 end
